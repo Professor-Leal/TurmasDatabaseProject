@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_navigation"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.rafaelleal.android.turmasdatabaseproject.Fragments.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_alunosFragment"
+            app:destination="@id/alunosFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_turmasFragment"
+            app:destination="@id/turmasFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/alunosFragment"
+        android:name="com.rafaelleal.android.turmasdatabaseproject.Fragments.AlunosFragment"
+        android:label="fragment_alunos"
+        tools:layout="@layout/fragment_alunos" />
+    <fragment
+        android:id="@+id/turmasFragment"
+        android:name="com.rafaelleal.android.turmasdatabaseproject.Fragments.TurmasFragment"
+        android:label="fragment_turmas"
+        tools:layout="@layout/fragment_turmas" >
+        <action
+            android:id="@+id/action_turmasFragment_to_novaTurmaFragment"
+            app:destination="@id/novaTurmaFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/novaTurmaFragment"
+        android:name="com.rafaelleal.android.turmasdatabaseproject.Fragments.NovaTurmaFragment"
+        android:label="fragment_nova_turma"
+        tools:layout="@layout/fragment_nova_turma" />
+</navigation>
