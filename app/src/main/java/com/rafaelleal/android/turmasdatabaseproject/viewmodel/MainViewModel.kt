@@ -23,6 +23,8 @@ class MainViewModel : ViewModel() {
         }
     }
 
+    // StateFlow e SharedFlow
+    // https://developer.android.com/kotlin/flow/stateflow-and-sharedflow
     // Recebe turmas do banco de dados como StateFlow e permanece a última pesquisa feita
     private val _turmas: MutableStateFlow<List<Turma>> = MutableStateFlow(emptyList())
     val turmas: StateFlow<List<Turma>>

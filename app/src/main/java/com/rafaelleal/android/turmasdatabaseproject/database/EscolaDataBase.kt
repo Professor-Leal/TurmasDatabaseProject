@@ -17,12 +17,13 @@ import com.rafaelleal.android.turmasdatabaseproject.models.TurmaAluno
  * @Database -> Define o banco de dados e as entidades dele
  */
 
-@Database(entities = [Turma::class, Aluno::class, TurmaAluno::class ], version = 1  )
+@Database(entities = [Turma::class, Aluno::class, TurmaAluno::class ], version = 1 , exportSchema = false )
 abstract  class EscolaDataBase: RoomDatabase() {
 
     // Interfaces que podem alterar o banco de dados:
     abstract fun  turmaDao() : TurmaDao
     abstract fun  alunoDao() : AlunoDao
     abstract fun turmaAlunoDao() : TurmaAlunoDao
+
 
 }
