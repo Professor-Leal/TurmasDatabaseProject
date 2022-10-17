@@ -3,6 +3,7 @@ package com.rafaelleal.android.turmasdatabaseproject.database
 import android.content.Context
 import androidx.room.Room
 import com.rafaelleal.android.turmasdatabaseproject.models.Turma
+import kotlinx.coroutines.flow.Flow
 
 
 /**
@@ -37,9 +38,10 @@ class EscolaRepository private constructor(context: Context) {
         }
     }
 
-    suspend fun getAllTurmas(): List<Turma> = database.turmaDao().getAll()
+    // Importe Flow de import kotlinx.coroutines.flow.Flow
+    fun getAllTurmas(): Flow<List<Turma>> = database.turmaDao().getAll()
 
-    suspend fun insertTurma(turma: Turma) {
+    fun insertTurma(turma: Turma) {
         database.turmaDao().insert(turma)
     }
 

@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.rafaelleal.android.turmasdatabaseproject.models.Turma
+import kotlinx.coroutines.flow.Flow
 
 /**
  * Anotações para o banco de dados:
@@ -49,8 +50,11 @@ interface TurmaDao {
 
     // Retorna todas as turmas
     @Query("SELECT * FROM Turma")
-    fun getAll() : List<Turma>
+    fun getAll() : Flow<List<Turma>>
 
+    // Flow mantem a lista atualizada de acordo com o banco de dados.
+    // Atualizações são percebidas.
+    // Tmabém não é necessário usar suspend ou coroutines.
 
     // Retorna item da tabela onde o id é o requisitado
     @Query("SELECT * FROM Turma Where id = :id")

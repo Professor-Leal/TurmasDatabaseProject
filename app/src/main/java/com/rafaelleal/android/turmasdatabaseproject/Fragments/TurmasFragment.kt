@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.rafaelleal.android.turmasdatabaseproject.Fragments.adapters.TurmaListener
 import com.rafaelleal.android.turmasdatabaseproject.Fragments.adapters.TurmasAdapter
@@ -14,6 +16,9 @@ import com.rafaelleal.android.turmasdatabaseproject.R
 import com.rafaelleal.android.turmasdatabaseproject.databinding.FragmentTurmasBinding
 import com.rafaelleal.android.turmasdatabaseproject.utils.nav
 import com.rafaelleal.android.turmasdatabaseproject.viewmodel.MainViewModel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collect
+
 
 class TurmasFragment : Fragment() {
 
@@ -45,6 +50,27 @@ class TurmasFragment : Fragment() {
         return view
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+
+                // Use Collect para receber um StateFlow
+                // import kotlinx.coroutines.flow.collect
+                viewModel.turmas.collect{
+                    turmas ->
+                    adapter.submitList(turmas)
+                    binding.rvTurmas.adapter = adapter
+                }
+
+            }
+        }
+
+
+
+    }
+
     val adapter = TurmasAdapter(
         object : TurmaListener {
             override fun onClick(posicao: Int) {
@@ -66,10 +92,10 @@ class TurmasFragment : Fragment() {
     }
 
     private fun setupObservers() {
-        viewModel.listaTurmas.observe(viewLifecycleOwner){
-            adapter.submitList(it)
-            binding.rvTurmas.adapter = adapter
-        }
+//        viewModel.listaTurmas.observe(viewLifecycleOwner){
+//            adapter.submitList(it)
+//            binding.rvTurmas.adapter = adapter
+//        }
     }
 
     private fun setupClickListeners() {
@@ -86,7 +112,7 @@ class TurmasFragment : Fragment() {
             LinearLayoutManager.VERTICAL,
             false
         )
-        viewModel.fetchTurmas()
+        //viewModel.fetchTurmas()
     }
 
 
