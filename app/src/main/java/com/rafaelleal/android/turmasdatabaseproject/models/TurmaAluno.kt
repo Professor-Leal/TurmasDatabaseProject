@@ -39,7 +39,7 @@ import androidx.room.PrimaryKey
 data class TurmaAluno(
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "id")
-    val id: Long,
+    val id: Long = 0L,
 
     @ColumnInfo(name = "turmaId")
     val turmaId: Long = 0L,

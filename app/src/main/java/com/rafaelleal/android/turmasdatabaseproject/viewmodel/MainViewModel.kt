@@ -5,8 +5,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.rafaelleal.android.turmasdatabaseproject.database.EscolaRepository
+import com.rafaelleal.android.turmasdatabaseproject.models.Aluno
 import com.rafaelleal.android.turmasdatabaseproject.models.Turma
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -17,12 +19,6 @@ class MainViewModel : ViewModel() {
 
     private val escolaRepository = EscolaRepository.get()
 
-    fun insertTurma(turma: Turma) {
-        viewModelScope.launch(Dispatchers.IO) {
-            escolaRepository.insertTurma(turma)
-        }
-    }
-
     // StateFlow e SharedFlow
     // https://developer.android.com/kotlin/flow/stateflow-and-sharedflow
     // Recebe turmas do banco de dados como StateFlow e permanece a última pesquisa feita
@@ -30,16 +26,88 @@ class MainViewModel : ViewModel() {
     val turmas: StateFlow<List<Turma>>
         get() = _turmas.asStateFlow()
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // CRUD Turma //////////////////////////////////////////////////////////////////////////////////
+
+    fun insertTurma(turma: Turma) {
+        viewModelScope.launch(Dispatchers.IO) {
+            escolaRepository.insertTurma(turma)
+        }
+    }
+
+    fun getTurmaById(id: Long): Turma {
+        var turma: Turma? = null
+        val job = viewModelScope.launch(Dispatchers.IO) {
+            val  turmaAsync = async{
+                escolaRepository.getTurmaById(id)
+            }
+            turma = turmaAsync.await()
+        }
+        return turma ?: Turma()
+    }
+
+    fun updateTurma(turma:Turma){
+        viewModelScope.launch(Dispatchers.IO) {
+            escolaRepository.updateTurma(turma)
+        }
+    }
+
+    fun deleteTurma(turma:Turma){
+        viewModelScope.launch(Dispatchers.IO){
+            escolaRepository.deleteTurma(turma)
+        }
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+    fun insertAluno(aluno: Aluno) {
+        viewModelScope.launch(Dispatchers.IO) {
+            escolaRepository.insertAluno(aluno)
+        }
+    }
+
+    // StateFlow e SharedFlow
+    // https://developer.android.com/kotlin/flow/stateflow-and-sharedflow
+    // Recebe turmas do banco de dados como StateFlow e permanece a última pesquisa feita
+    private val _alunos: MutableStateFlow<List<Aluno>> = MutableStateFlow(emptyList())
+    val alunos: StateFlow<List<Aluno>>
+        get() = _alunos.asStateFlow()
+
+
+
+
+
 
     // Inicia o viewModel
     init {
-        viewModelScope.launch(Dispatchers.IO)  {
+        collectAlunos()
+        collectTurmas()
+
+    }
+    fun collectAlunos(){
+        viewModelScope.launch {
+            escolaRepository.getAllAlunos().collect{
+                _alunos.value = it
+            }
+        }
+    }
+
+    fun collectTurmas(){
+        viewModelScope.launch {
             escolaRepository.getAllTurmas().collect {
                 _turmas.value = it
             }
         }
     }
-
 
 
 // // Usando Livedata:

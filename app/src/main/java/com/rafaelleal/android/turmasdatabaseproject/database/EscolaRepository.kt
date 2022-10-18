@@ -2,6 +2,7 @@ package com.rafaelleal.android.turmasdatabaseproject.database
 
 import android.content.Context
 import androidx.room.Room
+import com.rafaelleal.android.turmasdatabaseproject.models.Aluno
 import com.rafaelleal.android.turmasdatabaseproject.models.Turma
 import kotlinx.coroutines.flow.Flow
 
@@ -38,12 +39,41 @@ class EscolaRepository private constructor(context: Context) {
         }
     }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // DAO Turma ///////////////////////////////////////////////////////////////////////////////////
+
     // Importe Flow de import kotlinx.coroutines.flow.Flow
     fun getAllTurmas(): Flow<List<Turma>> = database.turmaDao().getAll()
 
     fun insertTurma(turma: Turma) {
         database.turmaDao().insert(turma)
     }
+
+    fun getTurmaById(turmaId: Long): Turma {
+        return database.turmaDao().getById(turmaId)
+    }
+
+    fun updateTurma(turma: Turma){
+        database.turmaDao().update(turma)
+    }
+
+    fun deleteTurma(turma: Turma){
+        database.turmaDao().delete(turma)
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // DAO Aluno ///////////////////////////////////////////////////////////////////////////////////
+
+    fun getAllAlunos(): Flow<List<Aluno>> = database.alunoDao().getAll()
+
+    fun insertAluno(aluno: Aluno) {
+        database.alunoDao().insert(aluno)
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 }

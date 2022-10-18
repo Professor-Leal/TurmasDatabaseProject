@@ -2,7 +2,7 @@ package com.rafaelleal.android.Alunosdatabaseproject.daos
 
 import androidx.room.*
 import com.rafaelleal.android.turmasdatabaseproject.models.Aluno
-
+import kotlinx.coroutines.flow.Flow
 
 
 /**
@@ -45,7 +45,7 @@ interface AlunoDao {
 
     // Retorna todos os Alunos
     @Query("SELECT * FROM Aluno")
-    fun getAll() : List<Aluno>
+    fun getAll() : Flow<List<Aluno>>
 
     // Retorna item da tabela onde o id é o requisitado
     @Query("SELECT * FROM Aluno Where id = :id")

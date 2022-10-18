@@ -21,7 +21,11 @@
         android:id="@+id/alunosFragment"
         android:name="com.rafaelleal.android.turmasdatabaseproject.Fragments.AlunosFragment"
         android:label="fragment_alunos"
-        tools:layout="@layout/fragment_alunos" />
+        tools:layout="@layout/fragment_alunos" >
+        <action
+            android:id="@+id/action_alunosFragment_to_novoAlunoFragment"
+            app:destination="@id/novoAlunoFragment" />
+    </fragment>
     <fragment
         android:id="@+id/turmasFragment"
         android:name="com.rafaelleal.android.turmasdatabaseproject.Fragments.TurmasFragment"
@@ -36,4 +40,9 @@
         android:name="com.rafaelleal.android.turmasdatabaseproject.Fragments.NovaTurmaFragment"
         android:label="fragment_nova_turma"
         tools:layout="@layout/fragment_nova_turma" />
+    <fragment
+        android:id="@+id/novoAlunoFragment"
+        android:name="com.rafaelleal.android.turmasdatabaseproject.Fragments.NovoAlunoFragment"
+        android:label="fragment_novo_aluno"
+        tools:layout="@layout/fragment_novo_aluno" />
 </navigation>

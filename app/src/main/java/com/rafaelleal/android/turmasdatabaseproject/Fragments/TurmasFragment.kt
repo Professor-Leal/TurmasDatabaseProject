@@ -14,7 +14,9 @@ import com.rafaelleal.android.turmasdatabaseproject.Fragments.adapters.TurmaList
 import com.rafaelleal.android.turmasdatabaseproject.Fragments.adapters.TurmasAdapter
 import com.rafaelleal.android.turmasdatabaseproject.R
 import com.rafaelleal.android.turmasdatabaseproject.databinding.FragmentTurmasBinding
+import com.rafaelleal.android.turmasdatabaseproject.models.Turma
 import com.rafaelleal.android.turmasdatabaseproject.utils.nav
+import com.rafaelleal.android.turmasdatabaseproject.utils.toast
 import com.rafaelleal.android.turmasdatabaseproject.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.collect
@@ -73,9 +75,17 @@ class TurmasFragment : Fragment() {
 
     val adapter = TurmasAdapter(
         object : TurmaListener {
-            override fun onClick(posicao: Int) {
-                // TODO(evento de clique)
+            override fun onEditClick(turma: Turma) {
+                //TODO("Not yet implemented")
+                toast("Editar")
             }
+
+            override fun onDeleteClick(turma: Turma) {
+                //TODO("Not yet implemented")
+                toast("Apagar")
+                viewModel.deleteTurma(turma)
+            }
+
 
         }
     )
