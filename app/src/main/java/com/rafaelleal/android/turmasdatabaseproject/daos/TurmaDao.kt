@@ -60,6 +60,4 @@ interface TurmaDao {
     @Query("SELECT * FROM Turma Where id = :id")
     fun getById(id: Long) : Turma
 
-
-
 }

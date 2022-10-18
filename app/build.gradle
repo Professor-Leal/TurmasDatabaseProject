@@ -2,7 +2,7 @@ plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
 
-    // Nexessário para Room:
+    // Necessário para Room:
     id 'org.jetbrains.kotlin.kapt'
 }
 

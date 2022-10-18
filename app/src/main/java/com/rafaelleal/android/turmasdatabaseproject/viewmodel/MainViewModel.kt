@@ -33,7 +33,7 @@ class MainViewModel : ViewModel() {
 
     // Inicia o viewModel
     init {
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO)  {
             escolaRepository.getAllTurmas().collect {
                 _turmas.value = it
             }
