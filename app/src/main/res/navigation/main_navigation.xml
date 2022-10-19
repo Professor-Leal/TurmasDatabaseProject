@@ -34,6 +34,9 @@
         <action
             android:id="@+id/action_turmasFragment_to_novaTurmaFragment"
             app:destination="@id/novaTurmaFragment" />
+        <action
+            android:id="@+id/action_turmasFragment_to_editarTurmaFragment"
+            app:destination="@id/editarTurmaFragment" />
     </fragment>
     <fragment
         android:id="@+id/novaTurmaFragment"
@@ -45,4 +48,9 @@
         android:name="com.rafaelleal.android.turmasdatabaseproject.Fragments.NovoAlunoFragment"
         android:label="fragment_novo_aluno"
         tools:layout="@layout/fragment_novo_aluno" />
+    <fragment
+        android:id="@+id/editarTurmaFragment"
+        android:name="com.rafaelleal.android.turmasdatabaseproject.Fragments.EditarTurmaFragment"
+        android:label="fragment_editar_turma"
+        tools:layout="@layout/fragment_editar_turma" />
 </navigation>

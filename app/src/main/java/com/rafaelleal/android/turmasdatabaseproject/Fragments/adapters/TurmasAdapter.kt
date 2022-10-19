@@ -21,9 +21,6 @@ class TurmasAdapter(val listener: TurmaListener) :
             TurmasAdapter.ViewHolder
             >(TurmaDiffCallback()) {
 
-//    val swipeToDeleteCallback = SwipeToDeleteCallback()
-
-
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
         holder.bind(item, position)
@@ -83,8 +80,6 @@ class TurmaDiffCallback : DiffUtil.ItemCallback<Turma>() {
         return oldItem == newItem
     }
 }
-
-
 // implementar cliques:
 // Crie a interface e passe dentro do ViewHolder
 interface TurmaListener {

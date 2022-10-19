@@ -15,7 +15,10 @@ import com.rafaelleal.android.turmasdatabaseproject.Fragments.adapters.AlunoList
 import com.rafaelleal.android.turmasdatabaseproject.Fragments.adapters.AlunosAdapter
 import com.rafaelleal.android.turmasdatabaseproject.R
 import com.rafaelleal.android.turmasdatabaseproject.databinding.FragmentAlunosBinding
+import com.rafaelleal.android.turmasdatabaseproject.models.Aluno
+import com.rafaelleal.android.turmasdatabaseproject.models.Turma
 import com.rafaelleal.android.turmasdatabaseproject.utils.nav
+import com.rafaelleal.android.turmasdatabaseproject.utils.toast
 import com.rafaelleal.android.turmasdatabaseproject.viewmodel.MainViewModel
 import kotlinx.coroutines.launch
 
@@ -62,10 +65,10 @@ class AlunosFragment : Fragment() {
                 viewModel.alunos.collect { alunos ->
                     adapter.submitList(alunos)
                     binding.rvAlunos.adapter = adapter
-                    Log.i(TAG, alunos.toString())
-                    alunos.forEach {
-                        Log.i(TAG, it.nome)
-                    }
+//                    Log.i(TAG, alunos.toString())
+//                    alunos.forEach {
+//                        Log.i(TAG, it.nome)
+//                    }
                 }
             }
         }
@@ -74,8 +77,15 @@ class AlunosFragment : Fragment() {
 
     val adapter = AlunosAdapter(
         object : AlunoListener {
-            override fun onClick(posicao: Int) {
-                // TODO(evento de clique)
+            override fun onEditClick(aluno: Aluno) {
+                //TODO("Not yet implemented")
+                toast("Editar")
+            }
+
+            override fun onDeleteClick(aluno: Aluno) {
+                //TODO("Not yet implemented")
+                toast("Apagar")
+                viewModel.deleteAluno(aluno)
             }
 
         }
@@ -97,7 +107,6 @@ class AlunosFragment : Fragment() {
             nav(R.id.action_alunosFragment_to_novoAlunoFragment)
         }
     }
-
 
     private fun setupRecyclerView() {
         // adapter precisa ser uma variável global para ser acessada por todos os métodos

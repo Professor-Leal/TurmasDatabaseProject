@@ -1,5 +1,6 @@
 package com.rafaelleal.android.turmasdatabaseproject.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -17,6 +18,8 @@ import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
 
+    val TAG = "Escola"
+
     private val escolaRepository = EscolaRepository.get()
 
     // StateFlow e SharedFlow
@@ -25,6 +28,13 @@ class MainViewModel : ViewModel() {
     private val _turmas: MutableStateFlow<List<Turma>> = MutableStateFlow(emptyList())
     val turmas: StateFlow<List<Turma>>
         get() = _turmas.asStateFlow()
+
+    // Guarda a turma selecionada para edição
+    private val _selectedTurmaId = MutableLiveData<Long>(0L)
+    val selectedTurmaId : LiveData<Long> = _selectedTurmaId
+    fun setSelectedTurmaId(value: Long) {
+        _selectedTurmaId.setValue(value)
+    }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // CRUD Turma //////////////////////////////////////////////////////////////////////////////////
@@ -36,14 +46,7 @@ class MainViewModel : ViewModel() {
     }
 
     fun getTurmaById(id: Long): Turma {
-        var turma: Turma? = null
-        val job = viewModelScope.launch(Dispatchers.IO) {
-            val  turmaAsync = async{
-                escolaRepository.getTurmaById(id)
-            }
-            turma = turmaAsync.await()
-        }
-        return turma ?: Turma()
+        return escolaRepository.getTurmaById(id)
     }
 
     fun updateTurma(turma:Turma){
@@ -68,6 +71,15 @@ class MainViewModel : ViewModel() {
 
 
 
+    // StateFlow e SharedFlow
+    // https://developer.android.com/kotlin/flow/stateflow-and-sharedflow
+    // Recebe turmas do banco de dados como StateFlow e permanece a última pesquisa feita
+    private val _alunos: MutableStateFlow<List<Aluno>> = MutableStateFlow(emptyList())
+    val alunos: StateFlow<List<Aluno>>
+        get() = _alunos.asStateFlow()
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // CRUD Aluno //////////////////////////////////////////////////////////////////////////////////
 
     fun insertAluno(aluno: Aluno) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -75,12 +87,31 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    // StateFlow e SharedFlow
-    // https://developer.android.com/kotlin/flow/stateflow-and-sharedflow
-    // Recebe turmas do banco de dados como StateFlow e permanece a última pesquisa feita
-    private val _alunos: MutableStateFlow<List<Aluno>> = MutableStateFlow(emptyList())
-    val alunos: StateFlow<List<Aluno>>
-        get() = _alunos.asStateFlow()
+    fun getAlunoById(id: Long): Aluno {
+        var aluno: Aluno? = null
+        val job = viewModelScope.launch(Dispatchers.IO) {
+            val  alunoAsync = async{
+                escolaRepository.getAlunoById(id)
+            }
+            aluno = alunoAsync.await()
+        }
+        return aluno ?: Aluno()
+    }
+
+    fun updateAluno(aluno:Aluno){
+        viewModelScope.launch(Dispatchers.IO) {
+            escolaRepository.updateAluno(aluno)
+        }
+    }
+
+    fun deleteAluno(aluno:Aluno){
+        viewModelScope.launch(Dispatchers.IO){
+            escolaRepository.deleteAluno(aluno)
+        }
+    }
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
 
 
 
@@ -91,7 +122,6 @@ class MainViewModel : ViewModel() {
     init {
         collectAlunos()
         collectTurmas()
-
     }
     fun collectAlunos(){
         viewModelScope.launch {
@@ -105,6 +135,25 @@ class MainViewModel : ViewModel() {
         viewModelScope.launch {
             escolaRepository.getAllTurmas().collect {
                 _turmas.value = it
+            }
+        }
+    }
+
+    // StateFlow e SharedFlow
+    // https://developer.android.com/kotlin/flow/stateflow-and-sharedflow
+    // Recebe turmas do banco de dados como StateFlow e permanece a última pesquisa feita
+    private val _alunosByName: MutableStateFlow<List<Aluno>> = MutableStateFlow(emptyList())
+    val alunosByName: StateFlow<List<Aluno>>
+        get() = _alunosByName.asStateFlow()
+
+    // Pesquisando com "%${input}%" vai retornar os que contém input no nome
+    fun collectAlunosByName(input: String){
+        viewModelScope.launch {
+            escolaRepository.getAlunoByName("%${input}%").collect {
+                _alunosByName.value = it
+                it.forEach {
+                    Log.i(TAG, "Aluno: ${it.nome}" )
+                }
             }
         }
     }

@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.rafaelleal.android.turmasdatabaseproject.databinding.AlunoListItemBinding
 import com.rafaelleal.android.turmasdatabaseproject.models.Aluno
+import com.rafaelleal.android.turmasdatabaseproject.models.Turma
 
 
 /**
@@ -21,9 +22,6 @@ class AlunosAdapter(val listener: AlunoListener) :
             Aluno,
             AlunosAdapter.ViewHolder
             >(AlunoDiffCallback()) {
-
-//    val swipeToDeleteCallback = SwipeToDeleteCallback()
-
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
@@ -49,6 +47,13 @@ class AlunosAdapter(val listener: AlunoListener) :
                 alunoNome.text  = item.nome
                 matricula.text = item.matricula
                 periodo.text = item.periodo.toString()
+                
+                ivDelete.setOnClickListener {
+                    listener.onDeleteClick(item)
+                }
+                ivEdit.setOnClickListener {
+                    listener.onEditClick(item)
+                }
             }
         }
 
@@ -65,7 +70,6 @@ class AlunosAdapter(val listener: AlunoListener) :
 
 }
 
-
 class AlunoDiffCallback : DiffUtil.ItemCallback<Aluno>() {
 
     override fun areItemsTheSame(oldItem: Aluno, newItem: Aluno): Boolean {
@@ -77,10 +81,10 @@ class AlunoDiffCallback : DiffUtil.ItemCallback<Aluno>() {
     }
 }
 
-
 // implementar cliques:
 // Crie a interface e passe dentro do ViewHolder
 interface AlunoListener {
-    fun onClick(posicao: Int)
+    fun onEditClick(aluno: Aluno)
+    fun onDeleteClick(aluno: Aluno)
 }
 

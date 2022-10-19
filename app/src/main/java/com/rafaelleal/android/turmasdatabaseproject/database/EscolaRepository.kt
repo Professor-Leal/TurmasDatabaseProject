@@ -67,11 +67,28 @@ class EscolaRepository private constructor(context: Context) {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // DAO Aluno ///////////////////////////////////////////////////////////////////////////////////
 
+    // Importe Flow de import kotlinx.coroutines.flow.Flow
     fun getAllAlunos(): Flow<List<Aluno>> = database.alunoDao().getAll()
 
     fun insertAluno(aluno: Aluno) {
         database.alunoDao().insert(aluno)
     }
+
+    fun getAlunoById(alunoId: Long): Aluno {
+        return database.alunoDao().getById(alunoId)
+    }
+
+    fun updateAluno(aluno: Aluno){
+        database.alunoDao().update(aluno)
+    }
+
+    fun deleteAluno(aluno: Aluno){
+        database.alunoDao().delete(aluno)
+    }
+
+    fun getAlunoByName(input: String): Flow<List<Aluno>> = database
+        .alunoDao()
+        .getListByName(input)
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
 

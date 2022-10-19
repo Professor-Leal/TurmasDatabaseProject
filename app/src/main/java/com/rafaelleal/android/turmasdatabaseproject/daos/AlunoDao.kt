@@ -48,7 +48,12 @@ interface AlunoDao {
     fun getAll() : Flow<List<Aluno>>
 
     // Retorna item da tabela onde o id é o requisitado
-    @Query("SELECT * FROM Aluno Where id = :id")
+    @Query("SELECT * FROM Aluno WHERE id = :id")
     fun getById(id: Long) : Aluno
+
+    // Retorna uma lista de Alunos cujos nomes contenham o texto de input
+    @Query("SELECT * FROM Aluno WHERE nome like :input ")
+    fun getListByName(input: String): Flow<List<Aluno>>
+
 
 }
