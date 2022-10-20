@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import com.rafaelleal.android.turmasdatabaseproject.models.Aluno
 import com.rafaelleal.android.turmasdatabaseproject.models.Turma
+import com.rafaelleal.android.turmasdatabaseproject.models.TurmaAluno
 import kotlinx.coroutines.flow.Flow
 
 
@@ -89,6 +90,36 @@ class EscolaRepository private constructor(context: Context) {
     fun getAlunoByName(input: String): Flow<List<Aluno>> = database
         .alunoDao()
         .getListByName(input)
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // DAO TurmaAluno ///////////////////////////////////////////////////////////////////////////////////
+
+    // Importe Flow de import kotlinx.coroutines.flow.Flow
+    fun getAllTurmaAlunos(): Flow<List<TurmaAluno>> = database.turmaAlunoDao().getAll()
+
+    fun insertTurmaAluno(turmaAluno: TurmaAluno) {
+        database.turmaAlunoDao().insert(turmaAluno)
+    }
+
+    fun getTurmaAlunoById(turmaAlunoId: Long): TurmaAluno {
+        return database.turmaAlunoDao().getById(turmaAlunoId)
+    }
+
+    fun updateTurmaAluno(turmaAluno: TurmaAluno){
+        database.turmaAlunoDao().update(turmaAluno)
+    }
+
+    fun deleteTurmaAluno(turmaAluno: TurmaAluno){
+        database.turmaAlunoDao().delete(turmaAluno)
+    }
+
+    fun getAlunosFromTurma(turmaId: Long): Flow<List<Aluno>> = database
+        .turmaAlunoDao().getAlunosFromTurma(turmaId)
+
+    fun getTurmaAlunoByTurmaIdAndAlunoId(turmaId: Long, alunoId: Long): TurmaAluno = database
+        .turmaAlunoDao().getByTurmaIdAndAlunoId(turmaId, alunoId)
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
 

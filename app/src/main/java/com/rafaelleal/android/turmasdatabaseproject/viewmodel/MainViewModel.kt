@@ -8,12 +8,12 @@ import androidx.lifecycle.viewModelScope
 import com.rafaelleal.android.turmasdatabaseproject.database.EscolaRepository
 import com.rafaelleal.android.turmasdatabaseproject.models.Aluno
 import com.rafaelleal.android.turmasdatabaseproject.models.Turma
+import com.rafaelleal.android.turmasdatabaseproject.models.TurmaAluno
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 
 class MainViewModel : ViewModel() {
@@ -31,7 +31,7 @@ class MainViewModel : ViewModel() {
 
     // Guarda a turma selecionada para edição
     private val _selectedTurmaId = MutableLiveData<Long>(0L)
-    val selectedTurmaId : LiveData<Long> = _selectedTurmaId
+    val selectedTurmaId: LiveData<Long> = _selectedTurmaId
     fun setSelectedTurmaId(value: Long) {
         _selectedTurmaId.setValue(value)
     }
@@ -45,30 +45,26 @@ class MainViewModel : ViewModel() {
         }
     }
 
-    fun getTurmaById(id: Long): Turma {
-        return escolaRepository.getTurmaById(id)
+    suspend fun getTurmaById(id: Long): Turma {
+        val receivedTurma = viewModelScope.async(Dispatchers.IO) {
+            return@async escolaRepository.getTurmaById(id)
+        }
+        return receivedTurma.await()
     }
 
-    fun updateTurma(turma:Turma){
+    fun updateTurma(turma: Turma) {
         viewModelScope.launch(Dispatchers.IO) {
             escolaRepository.updateTurma(turma)
         }
     }
 
-    fun deleteTurma(turma:Turma){
-        viewModelScope.launch(Dispatchers.IO){
+    fun deleteTurma(turma: Turma) {
+        viewModelScope.launch(Dispatchers.IO) {
             escolaRepository.deleteTurma(turma)
         }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-
-
-
-
 
 
     // StateFlow e SharedFlow
@@ -90,7 +86,7 @@ class MainViewModel : ViewModel() {
     fun getAlunoById(id: Long): Aluno {
         var aluno: Aluno? = null
         val job = viewModelScope.launch(Dispatchers.IO) {
-            val  alunoAsync = async{
+            val alunoAsync = async {
                 escolaRepository.getAlunoById(id)
             }
             aluno = alunoAsync.await()
@@ -98,14 +94,14 @@ class MainViewModel : ViewModel() {
         return aluno ?: Aluno()
     }
 
-    fun updateAluno(aluno:Aluno){
+    fun updateAluno(aluno: Aluno) {
         viewModelScope.launch(Dispatchers.IO) {
             escolaRepository.updateAluno(aluno)
         }
     }
 
-    fun deleteAluno(aluno:Aluno){
-        viewModelScope.launch(Dispatchers.IO){
+    fun deleteAluno(aluno: Aluno) {
+        viewModelScope.launch(Dispatchers.IO) {
             escolaRepository.deleteAluno(aluno)
         }
     }
@@ -113,9 +109,33 @@ class MainViewModel : ViewModel() {
     ////////////////////////////////////////////////////////////////////////////////////////////////
 
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    // CRUD TurmaAluno //////////////////////////////////////////////////////////////////////////////////
+
+    fun insertTurmaAluno(turmaAluno: TurmaAluno){
+        viewModelScope.launch(Dispatchers.IO) {
+            escolaRepository.insertTurmaAluno(turmaAluno)
+        }
+    }
+
+    suspend fun getTurmaAlunoByTurmaIdAndAlunoId(turmaId: Long, alunoId: Long): TurmaAluno{
+        val turmaAluno = viewModelScope.async(Dispatchers.IO){
+            escolaRepository.getTurmaAlunoByTurmaIdAndAlunoId(turmaId, alunoId)
+        }
+        return turmaAluno.await()
+    }
+
+    fun deleteTurmaAluno(turmaId: Long, alunoId: Long){
+        viewModelScope.launch(Dispatchers.IO) {
+            val turmaAluno = getTurmaAlunoByTurmaIdAndAlunoId(turmaId, alunoId)
+            escolaRepository.deleteTurmaAluno(turmaAluno)
+        }
 
 
+    }
 
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////////////////////////////
 
 
     // Inicia o viewModel
@@ -123,15 +143,16 @@ class MainViewModel : ViewModel() {
         collectAlunos()
         collectTurmas()
     }
-    fun collectAlunos(){
+
+    fun collectAlunos() {
         viewModelScope.launch {
-            escolaRepository.getAllAlunos().collect{
+            escolaRepository.getAllAlunos().collect {
                 _alunos.value = it
             }
         }
     }
 
-    fun collectTurmas(){
+    fun collectTurmas() {
         viewModelScope.launch {
             escolaRepository.getAllTurmas().collect {
                 _turmas.value = it
@@ -147,12 +168,30 @@ class MainViewModel : ViewModel() {
         get() = _alunosByName.asStateFlow()
 
     // Pesquisando com "%${input}%" vai retornar os que contém input no nome
-    fun collectAlunosByName(input: String){
+    fun collectAlunosByName(input: String) {
         viewModelScope.launch {
             escolaRepository.getAlunoByName("%${input}%").collect {
                 _alunosByName.value = it
                 it.forEach {
-                    Log.i(TAG, "Aluno: ${it.nome}" )
+                    Log.i(TAG, "Aluno: ${it.nome}")
+                }
+            }
+        }
+    }
+
+    // StateFlow e SharedFlow
+    // https://developer.android.com/kotlin/flow/stateflow-and-sharedflow
+    // Recebe turmas do banco de dados como StateFlow e permanece a última pesquisa feita
+    private val _alunosNaTurma: MutableStateFlow<List<Aluno>> = MutableStateFlow(emptyList())
+    val alunosNaTurma: StateFlow<List<Aluno>>
+        get() = _alunosNaTurma.asStateFlow()
+
+    // Pesquisando com "%${input}%" vai retornar os que contém input no nome
+    fun collectAlunosNaTurma(input: Long) {
+        viewModelScope.launch {
+            selectedTurmaId.value?.let { turmaId ->
+                escolaRepository.getAlunosFromTurma(turmaId).collect { listaAluno ->
+                    _alunosNaTurma.value = listaAluno
                 }
             }
         }

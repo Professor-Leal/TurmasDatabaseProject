@@ -4,6 +4,7 @@ import androidx.room.*
 import com.rafaelleal.android.turmasdatabaseproject.models.Aluno
 import com.rafaelleal.android.turmasdatabaseproject.models.Turma
 import com.rafaelleal.android.turmasdatabaseproject.models.TurmaAluno
+import kotlinx.coroutines.flow.Flow
 
 
 /**
@@ -46,7 +47,7 @@ interface TurmaAlunoDao {
 
     // Retorna todos os TurmaAlunos
     @Query("SELECT * FROM TurmaAluno")
-    fun getAll() : List<TurmaAluno>
+    fun getAll() : Flow<List<TurmaAluno>>
 
     // Retorna item da tabela onde o id é o requisitado
     @Query("SELECT * FROM TurmaAluno Where id = :id")
@@ -62,10 +63,12 @@ interface TurmaAlunoDao {
 
     // Retorna alunos da turma
     @Query("SELECT * FROM Aluno WHERE EXISTS (SELECT * FROM TurmaAluno WHERE TurmaAluno.alunoId = Aluno.id AND TurmaAluno.turmaId = :turmaId )")
-    fun getAlunosFromTurma(turmaId: Long): List<Aluno>
+    fun getAlunosFromTurma(turmaId: Long): Flow<List<Aluno>>
 
     // retorna turmas do aluno
     @Query("SELECT * FROM Turma WHERE EXISTS (SELECT * FROM TurmaAluno WHERE TurmaAluno.turmaId = Turma.id AND TurmaAluno.alunoId = :alunoId )")
     fun getTurmasFromAluno(alunoId: Long): List<Turma>
 
+    @Query("SELECT * FROM TurmaAluno WHERE turmaId = :turmaId AND alunoId = :alunoId")
+    fun getByTurmaIdAndAlunoId(turmaId: Long, alunoId: Long): TurmaAluno
 }

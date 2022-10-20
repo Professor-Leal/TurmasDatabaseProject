@@ -52,5 +52,14 @@
         android:id="@+id/editarTurmaFragment"
         android:name="com.rafaelleal.android.turmasdatabaseproject.Fragments.EditarTurmaFragment"
         android:label="fragment_editar_turma"
-        tools:layout="@layout/fragment_editar_turma" />
+        tools:layout="@layout/fragment_editar_turma" >
+        <action
+            android:id="@+id/action_editarTurmaFragment_to_editarAlunosDaTurmaFragment"
+            app:destination="@id/editarAlunosDaTurmaFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/editarAlunosDaTurmaFragment"
+        android:name="com.rafaelleal.android.turmasdatabaseproject.Fragments.EditarAlunosDaTurmaFragment"
+        android:label="fragment_editar_alunos_da_turma"
+        tools:layout="@layout/fragment_editar_alunos_da_turma" />
 </navigation>

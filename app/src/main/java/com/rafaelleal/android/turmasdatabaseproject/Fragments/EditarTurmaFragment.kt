@@ -11,6 +11,7 @@ import androidx.lifecycle.lifecycleScope
 import com.rafaelleal.android.turmasdatabaseproject.R
 import com.rafaelleal.android.turmasdatabaseproject.databinding.FragmentEditarTurmaBinding
 import com.rafaelleal.android.turmasdatabaseproject.models.Turma
+import com.rafaelleal.android.turmasdatabaseproject.utils.nav
 import com.rafaelleal.android.turmasdatabaseproject.utils.navUp
 import com.rafaelleal.android.turmasdatabaseproject.viewmodel.MainViewModel
 import kotlinx.coroutines.Dispatchers
@@ -85,6 +86,10 @@ class EditarTurmaFragment : Fragment() {
             fabUpdateTurma.setOnClickListener {
                 updateTurma()
                 navUp()
+            }
+
+            btnEditarAlunosTurma.setOnClickListener {
+                nav(R.id.action_editarTurmaFragment_to_editarAlunosDaTurmaFragment)
             }
         }
     }
